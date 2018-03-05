@@ -1,0 +1,21 @@
+@import '~react-md/src/scss/_colors.scss';
+@import '~react-md/src/scss/_react-md.scss';
+
+* {
+    margin: auto;
+}
+
+.Application {
+
+    .GridList {
+        .Functions {
+            width: 38%;
+            margin: 0 auto;
+        }
+
+        .GraphCalls {
+            width: 58%;
+            height: calc(100% - 200px);
+        }
+    }
+}

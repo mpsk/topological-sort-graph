@@ -22,7 +22,7 @@ const Links: React.SFC<LinksProps> = ({linksStore}) => {
                     </ol>
                 </CardText>
                 <CardText>
-                    <h5>Tolopogical Output</h5>
+                    <h5>Topological Output</h5>
                     <div>
                         {linksStore.topologicalOutput}
                     </div>

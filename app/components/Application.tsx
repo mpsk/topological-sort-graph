@@ -17,7 +17,7 @@ interface AppProps {
 const Application: React.SFC<AppProps> = ({stores}) => {
     return (
         <div className='Application'>
-            <AddLink funcsStore={stores.linksStore}/>
+            <AddLink linksStore={stores.linksStore}/>
             <Divider />
             <GridList className="GridList" size={1}>
                 <Links linksStore={stores.linksStore}/>

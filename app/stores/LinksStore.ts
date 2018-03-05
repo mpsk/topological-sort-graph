@@ -8,11 +8,15 @@ import { getNodes, topologicalSort } from '../utils/utils';
 const mockData = () => ['foo bar', 'foo baz', 'bar baz'];
 
 export default class LinksStore {
+
+    static isLinkValid = isLinkValid;
     
     @observable links: IObservableArray<string> = observable([].concat(mockData()));
 
     @action addLink(link: string): void {
-        this.links.push(link);
+        if (isLinkValid(link)) {
+            this.links.push(link);
+        }
     }
 
     @action clearAll() {
@@ -31,6 +35,11 @@ export default class LinksStore {
         return topologicalOutput(this.links.slice());
     }
 
+}
+
+function isLinkValid(link: string): boolean {
+    const separator = !!link.match('-') ? '-' : ' ';
+    return link.split(separator).length === 2;
 }
 
 function getLinks(arr): Array<[string, string]> {

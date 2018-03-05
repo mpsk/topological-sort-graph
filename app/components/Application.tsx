@@ -1,7 +1,7 @@
 'use strict';
 
 import * as React from 'react';
-import { Divider, GridList } from 'react-md';
+import { Toolbar, Divider, GridList, Button } from 'react-md';
 import { Stores } from '../stores';
 
 import AddLink from './AddLink/AddLink';
@@ -15,9 +15,13 @@ interface AppProps {
 }
 
 const Application: React.SFC<AppProps> = ({stores}) => {
+    const onGenerate = () => stores.linksStore.generateLinks();
     return (
         <div className='Application'>
-            <AddLink linksStore={stores.linksStore}/>
+            <Toolbar>
+                <AddLink linksStore={stores.linksStore}/>
+                <Button className="generate-links-btn" onClick={onGenerate} raised primary>Generate Links</Button>
+            </Toolbar>
             <Divider />
             <GridList className="GridList" size={1}>
                 <Links linksStore={stores.linksStore}/>

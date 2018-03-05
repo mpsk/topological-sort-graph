@@ -3,19 +3,17 @@
 import {find, uniq} from 'lodash';
 import {observable, action, computed, IObservableArray} from 'mobx';
 
-import { getNodes, topologicalSort } from '../utils/utils';
-
-const mockData = () => ['foo bar', 'foo baz', 'bar baz'];
+import { getNodes, topologicalSort, generateLinksSet } from '../utils/utils';
 
 export default class LinksStore {
 
     static isLinkValid = isLinkValid;
     
-    @observable links: IObservableArray<string> = observable([].concat(mockData()));
+    @observable links: IObservableArray<string> = observable([].concat(randomStringLinks()));
 
     @action addLink(link: string): void {
         if (isLinkValid(link)) {
-            this.links.push(link);
+            this.links.push(link.trim());
         }
     }
 
@@ -23,12 +21,16 @@ export default class LinksStore {
         this.links.replace([]);
     }
 
+    @action generateLinks() {
+        this.links.replace(randomStringLinks());
+    }
+
     @computed get linksData() {
         return getLinks(this.links.slice());
     }
 
     @computed get nodes() {
-        return buildGraph(this.links.slice());
+        return getGraphConfig(this.links.slice());
     }
 
     @computed get topologicalOutput() {
@@ -37,28 +39,28 @@ export default class LinksStore {
 
 }
 
+const randomStringLinks = () => generateLinksSet().map(pair => pair.join(' '));
+const detectSeparator = (link: string) => !!link.match('-') ? '-' : ' ';
+
 function isLinkValid(link: string): boolean {
-    const separator = !!link.match('-') ? '-' : ' ';
-    return link.split(separator).length === 2;
+    return link.trim().split(detectSeparator(link)).length === 2;
 }
 
 function getLinks(arr): Array<[string, string]> {
     return arr.map(item => {
-        const separator = !!item.match('-') ? '-' : ' ';
-        return item.split(separator).map(f => f.trim());
+        return item.split(detectSeparator(item)).map(f => f.trim());
     });
 }
 
 function topologicalOutput(links) {
-    const sorted = topologicalSort(getLinks(links));
-    return sorted[0] ? sorted.join(' - ') : 'Impossible';
+    return topologicalSort(getLinks(links)).join(' - ') || 'Impossible';
 }
 
 type GraphConfig = {
     nodes: Array<{id: string; label: string}>;
     edges: Array<{from: string; to: string}>;
 };
-function buildGraph(links): GraphConfig {
+function getGraphConfig(links): GraphConfig {
     return getLinks(links)
         .reduce((res, links, i) => {
             const {nodes, edges} = res;

@@ -28,7 +28,7 @@ const Links: React.SFC<LinksProps> = ({linksStore}) => {
                     </div>
                 </CardText>
                 <CardActions>
-                    <Button raised onClick={() => linksStore.clearAll()}>Clear All</Button>
+                    <Button raised primary onClick={() => linksStore.clearAll()}>Clear All</Button>
                 </CardActions>
             </Card>
         </div>

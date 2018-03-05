@@ -1,6 +1,7 @@
 'use strict';
 
 export {
+    generateLinksSet,
     getNodes,
     topologicalSort
 }
@@ -60,4 +61,26 @@ function topologicalSort(links: Array<[string, string]>) {
         }
         sorted.unshift(node.id);
     }
+}
+
+function getRandomNum(n) {
+    return Math.floor(Math.random() * n);
+}
+
+function getRandomPair(n) {
+    const a = getRandomNum(n);
+    let b = getRandomNum(n);
+    while (a === b) {
+        b = getRandomNum(n);
+    }
+    return [a, b];
+}
+
+function generateLinksSet(count = 5): Array<[string, string]> {
+    let links = [];
+    let i = count;
+    while(i--) {
+        links.push(getRandomPair(count));
+    }
+    return links;
 }

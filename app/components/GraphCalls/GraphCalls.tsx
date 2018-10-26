@@ -5,14 +5,14 @@ import { Card, CardTitle, CardText } from 'react-md';
 import Graph from 'react-graph-vis';
 import { observer } from 'mobx-react';
 
-import { LinksStore } from '../../stores';
+import { LinksStore, connectObserved, connect } from '../../stores';
 import './GraphCalls.scss';
 
-interface FunctionsProps {
-    linksStore: LinksStore;
+interface GraphCallsProps {
+    nodes: LinksStore["nodes"];
 }
 
-const GraphCalls: React.SFC<FunctionsProps> = (props) => {
+const GraphCalls: React.SFC<GraphCallsProps> = (props) => {
 
     const options = {
         edges: {
@@ -21,18 +21,20 @@ const GraphCalls: React.SFC<FunctionsProps> = (props) => {
     };
 
     return (
-        <div className="GraphCalls">
-            <Card>
-                <CardTitle title="Links Graph" />
-                <CardText className="graph-body">
-                    <Graph graph={props.linksStore.nodes} options={options} />
-                </CardText>
-            </Card>
-        </div>
+        <Card className="GraphCalls">
+            <CardTitle title="Links Graph" />
+            <CardText className="graph-body">
+                <Graph graph={props.nodes} options={options} />
+            </CardText>
+        </Card>
     )
 }
 
-export default observer(GraphCalls);
+export default connectObserved<GraphCallsProps>((store) => {
+    return {
+        nodes: store.linksStore.nodes
+    };
+})(GraphCalls);
 
 function getNodes() {
     return {

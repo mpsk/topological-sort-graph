@@ -4,38 +4,67 @@ import * as React from 'react';
 import { Card, CardTitle, CardText, Button, CardActions } from 'react-md';
 import { observer } from 'mobx-react';
 
-import { LinksStore } from '../../stores';
+import { LinksStore, connect, connectObserved } from '../../stores';
+import TopologicalOutput from "./TopologicalOutput";
 
-interface LinksProps {
-    linksStore: LinksStore;
+import "./Links.scss";
+
+interface InjectedLinksProps {
+    generateLinks(): void;
+    clearAll(): void;
+    linksData: LinksStore["linksData"];
 }
 
-const Links: React.SFC<LinksProps> = ({linksStore}) => {
+interface LinkProps {
+    data: string;
+}
+
+const Links: React.SFC<InjectedLinksProps & LinkProps> = (props) => {
+
+    const {generateLinks, linksData, clearAll} = props;
     
     return (
-        <div className="Functions">
-            <Card>
-                <CardTitle title="Links Relationships"/>
-                <CardText>
-                    <ol>
-                        {linksStore.linksData.map((item, i) => getFunctionCallerItem(item, i))}    
-                    </ol>
-                </CardText>
-                <CardText>
-                    <h5>Topological Output</h5>
-                    <div>
-                        {linksStore.topologicalOutput}
-                    </div>
-                </CardText>
-                <CardActions>
-                    <Button raised primary onClick={() => linksStore.clearAll()}>Clear All</Button>
-                </CardActions>
-            </Card>
-        </div>
+        <Card className="Links">
+            <CardTitle title="Links Relationships"/>
+            <CardText>
+                <ol className="links-list scrollable-thumb">
+                    {linksData.map((item, i) => getFunctionCallerItem(item, i))}    
+                </ol>
+            </CardText>
+            <CardText>
+                <TopologicalOutput data={new Date().toLocaleTimeString()} />
+                <div>
+                    <b>Links OwnProps from app.localTime via Application (not observed): </b>
+                    <div>{props.data}</div>
+                </div>
+            </CardText>
+            <CardActions>
+                <Button raised primary onClick={clearAll}>@a Clear All</Button>
+                <Button className="generate-links-btn" onClick={generateLinks} raised primary>@a Generate Links</Button>
+            </CardActions>
+        </Card>
     )
 }
 
-export default observer(Links);
+// export default connect<InjectedLinksProps, LinkProps>((stores, ownProps) => {
+//     return {
+//         topologicalOutput: stores.linksStore.topologicalOutput,
+//         linksData: stores.linksStore.linksData,
+//         generateLinks: () => stores.linksStore.generateLinks(),
+//         clearAll: () => stores.linksStore.clearAll(),
+//         data: ownProps.data
+//     }
+// })(Links);
+
+export default connectObserved<InjectedLinksProps, LinkProps>((stores, ownProps) => {
+    return {
+        linksData: stores.linksStore.linksData,
+        generateLinks: () => stores.linksStore.generateLinks(),
+        clearAll: () => stores.linksStore.clearAll(),
+        data: ownProps.data
+    }
+})(Links);
+
 
 function getFunctionCallerItem(links, idx) {
     return (

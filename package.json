@@ -19,7 +19,7 @@
     "react-dom": "16.2.0",
     "react-graph-vis": "1.0.2",
     "react-md": "1.2.11",
-    "serve": "7.0.0"
+    "serve": "^10.0.2"
   },
   "devDependencies": {
     "@types/es6-shim": "0.31.34",

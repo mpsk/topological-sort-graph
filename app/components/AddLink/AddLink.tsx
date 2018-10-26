@@ -1,17 +1,17 @@
 'use strict';
 
 import * as React from 'react';
-import { TextField } from 'react-md';
+import { TextField, Button } from 'react-md';
 import Icon from '../Icon/Icon';
-import { LinksStore } from '../../stores';
+import { LinksStore, connectObserved, connect } from '../../stores';
 
 import './AddLink.scss';
 
-interface AddFunctionProps {
+interface AddLinkProps {
     linksStore: LinksStore;
 }
 
-export default class AddLink extends React.Component<AddFunctionProps, {value: string}> {
+class AddLink extends React.Component<AddLinkProps, {value: string}> {
 
     constructor() {
         super();
@@ -19,10 +19,15 @@ export default class AddLink extends React.Component<AddFunctionProps, {value: s
     }
 
     onSubmit(e) {
-        const { linksStore } = this.props;
+        if (e.key === 'Enter') {
+            this.onAddLink();
+        }
+    }
+
+    onAddLink = () => {
         const { value } = this.state;
-        if (e.key === 'Enter' && LinksStore.isLinkValid(value)) {
-            linksStore.addLink(value);
+        if (LinksStore.isLinkValid(value)) {
+            this.props.linksStore.addLink(value);
             this.setState({value: ''});
         }
     }
@@ -42,8 +47,13 @@ export default class AddLink extends React.Component<AddFunctionProps, {value: s
         return (
             <div className='AddLink'>
                 <TextField {...textProps}/>
+                <Button raised primary onClick={this.onAddLink}>@a Add</Button>
             </div>
         );
     }
 
 }
+
+export default connectObserved<AddLinkProps>((store) => ({
+    linksStore: store.linksStore
+}))(AddLink);

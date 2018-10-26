@@ -76,7 +76,7 @@ function getRandomPair(n) {
     return [a, b];
 }
 
-function generateLinksSet(count = 5): Array<[string, string]> {
+function generateLinksSet(count = 10): Array<[string, string]> {
     let links = [];
     let i = count;
     while(i--) {

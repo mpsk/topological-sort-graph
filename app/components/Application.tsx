@@ -1,8 +1,9 @@
 'use strict';
 
 import * as React from 'react';
-import { Toolbar, Divider, GridList, Button } from 'react-md';
-import { Stores } from '../stores';
+import { Provider, Observer } from "mobx-react";
+import { Toolbar, Divider, Cell, Grid, Button, Card, CardText } from 'react-md';
+import { Stores, LinksStore, connect } from '../stores';
 
 import AddLink from './AddLink/AddLink';
 import Links from './Links/Links';
@@ -11,23 +12,44 @@ import GraphCalls from './GraphCalls/GraphCalls';
 import './Application.scss';
 
 interface AppProps {
-    stores: Stores;
+    stores: Stores
 }
 
 const Application: React.SFC<AppProps> = ({stores}) => {
     const onGenerate = () => stores.linksStore.generateLinks();
     return (
-        <div className='Application'>
-            <Toolbar>
-                <AddLink linksStore={stores.linksStore}/>
-                <Button className="generate-links-btn" onClick={onGenerate} raised primary>Generate Links</Button>
-            </Toolbar>
-            <Divider />
-            <GridList className="GridList" size={1}>
-                <Links linksStore={stores.linksStore}/>
-                <GraphCalls linksStore={stores.linksStore}/>
-            </GridList>
-        </div>
+        <Provider {...stores} >
+            <div className='Application'>
+                <Toolbar>
+                    <AddLink />
+                    <Button className="generate-links-btn" onClick={onGenerate} raised primary>@a Generate Links</Button>
+                </Toolbar>
+                <Divider />
+                <div className="GridList">
+                    <Grid>
+                        <Cell size={4} tabletSize={4} order={1}>
+                            <Links data={stores.app.localTime}/>
+                        </Cell>
+                        <Cell size={6} tabletSize={8} order={2}>
+                            <GraphCalls />
+                        </Cell>
+                        <Cell size={2} tabletSize={4} order={0}>
+                            <Observer>
+                                {() => (
+                                    <Card>
+                                        <CardText>
+                                            <div>Application Observer Element</div>
+                                            <b>Application stores.app.localTime</b>:
+                                            <div>{stores.app.localTime}</div>
+                                        </CardText>
+                                    </Card>
+                                )}
+                            </Observer>
+                        </Cell>
+                    </Grid>
+                </div>
+            </div>
+        </Provider>
     );
 }
 

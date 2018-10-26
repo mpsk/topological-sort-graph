@@ -44,7 +44,8 @@ const CLIENT_CONFIG = {
         path: path.resolve(OUT_PATH),
         filename: 'app.bundle.js'
     },
-    devtool: IS_PROD ? false : 'eval-source-map',
+    // devtool: IS_PROD ? false : 'eval-source-map',
+    devtool: 'eval-source-map',
     module: {
         rules: rules.concat([{
             test: /\.scss$/,
